@@ -13,7 +13,7 @@ module BackgroundCache
       # Store the cache options
       @@caches.push({
         :except => options.delete(:except),
-        :every => options.delete(:every) || 1.hour,
+        :every => options.delete(:every),
         :layout => options.delete(:layout),
         :only => options.delete(:only),
         :params => options
@@ -42,11 +42,12 @@ module BackgroundCache
     end
     # Find cache config from params
     def self.from_params(params)
+      params.delete 'background_cache'
       from_params_and_fragment(params)
     end
     def self.from_params_and_fragment(params, fragment={})
       if defined?(@@caches) && !@@caches.empty?
-        @@caches.select { |item|
+        found = @@caches.select { |item|
           # Basic params match (action, controller, etc)
           item[:params] == params.symbolize_keys &&
           (
@@ -60,9 +61,9 @@ module BackgroundCache
                 item[:only] == fragment ||
                 (
                   # :only is an array
-                  items[:only].respond_to?(:index) &&
+                  item[:only].respond_to?(:index) &&
                   # :only includes matching fragment
-                  items[:only].include?(fragment)
+                  item[:only].include?(fragment)
                 )
               ) &&
               (
@@ -72,14 +73,15 @@ module BackgroundCache
                 item[:except] != fragment ||
                 (
                   # :except is an array
-                  items[:except].respond_to?(:index) &&
+                  item[:except].respond_to?(:index) &&
                   # :except does not include matching fragment
-                  !items[:except].include?(fragment)
+                  !item[:except].include?(fragment)
                 )
               )
             )
           )
         }[0]
+        found
       end
     end
     def self.caches

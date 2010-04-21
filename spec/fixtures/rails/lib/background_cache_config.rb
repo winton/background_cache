@@ -1,9 +1,12 @@
 BackgroundCache::Config.new do |config|
   config.cache(
     :controller => 'application',
-    :action => 'test_1',
-    :every => 1.minute,
-    :layout => false,
-    :only => 'test'
+    :action => 'test_1'
   )
+  config.every(1.minute).layout(false).only('test_2') do
+    config.cache(
+      :controller => 'application',
+      :action => 'test_2'
+    )
+  end
 end

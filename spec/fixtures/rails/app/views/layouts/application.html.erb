@@ -1,0 +1,4 @@
+<html><body>
+	<% cache "layout_#{params[:action]}" do -%>1<% end -%>
+	<%= yield %>
+</body></html>
