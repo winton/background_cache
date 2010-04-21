@@ -17,7 +17,7 @@ Require do
     email 'mail@wintoni.us'
     name 'background_cache'
     homepage "http://github.com/winton/#{name}"
-    summary ""
+    summary "Bust caches before your users do"
     version '0.1.0'
   end
   

@@ -1,7 +1,20 @@
 BackgroundCache
 ===============
 
-Use a rake task to expire fragments, with or without a layout. Uses Rails and cache_fu.
+Bust caches before your users do (in Rails).
+
+Requirements
+------------
+
+<pre>
+sudo gem install background_cache
+</pre>
+
+### config/environment.rb
+
+<pre>
+config.gem 'background_cache'
+</pre>
 
 Dynamic Configuration
 ---------------------
