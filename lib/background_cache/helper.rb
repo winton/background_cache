@@ -11,7 +11,7 @@ module BackgroundCache
         # ActionController::Caching::Fragments#fragment_for (undocumented)
         pos = output_buffer.length
         block.call
-        @controller.write_fragment(name, buffer[pos..-1], options)
+        @controller.write_fragment(name, output_buffer[pos..-1], options)
       else
         cache_without_background_cache(name, options, &block)
       end

@@ -7,19 +7,15 @@ module BackgroundCache
       yield self
     end
     def cache(options)
-      # Convert keys to strings for param matching
-      options.dup.each do |key, value|
-        options[key.to_s] = value
-        options.delete(key)
-      end
       # Method-style config
+      @options ||= {}
       options = @options.merge(options)
       # Store the cache options
       @@caches.push({
-        :except => options.delete('except'),
-        :every => options.delete('every') || 1.hour,
-        :layout => options.delete('layout'),
-        :only => options.delete('only'),
+        :except => options.delete(:except),
+        :every => options.delete(:every) || 1.hour,
+        :layout => options.delete(:layout),
+        :only => options.delete(:only),
         :params => options
       })
     end
@@ -37,7 +33,7 @@ module BackgroundCache
     end
     def set_option(key, value, &block)
       @options ||= {}
-      @options[key.to_s] = value
+      @options[key] = value
       if block
         yield
         @options = {}
@@ -48,14 +44,14 @@ module BackgroundCache
     def self.from_params(params)
       from_params_and_fragment(params)
     end
-    def self.from_params_and_fragment(params, fragment=nil)
+    def self.from_params_and_fragment(params, fragment={})
       if defined?(@@caches) && !@@caches.empty?
         @@caches.select { |item|
           # Basic params match (action, controller, etc)
-          item[:params] == params &&
+          item[:params] == params.symbolize_keys &&
           (
             # No fragment specified
-            fragment.nil? ||
+            fragment.empty? ||
             (
               (
                 # :only not defined

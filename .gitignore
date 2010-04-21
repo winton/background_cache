@@ -3,4 +3,5 @@
 *.gemspec
 coverage
 pkg
+spec/fixtures/rails/log/*
 tmp
