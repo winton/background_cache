@@ -7,4 +7,8 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+  
+  def test_3
+    render :text => read_fragment('test_3').inspect, :layout => false
+  end
 end

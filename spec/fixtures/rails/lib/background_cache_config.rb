@@ -9,4 +9,8 @@ BackgroundCache::Config.new do |config|
       :action => 'test_2'
     )
   end
+  config.cache(
+    :controller => 'application',
+    :action => 'test_3'
+  )
 end

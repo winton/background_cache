@@ -1,10 +1,21 @@
 module BackgroundCache
   module Controller
     def self.included(base)
+      base.alias_method_chain :read_fragment, :background_cache
       base.around_filter BackgroundCacheFilter.new
     end
       
     private
+    
+    def read_fragment_with_background_cache(key, options=nil)
+      cache = BackgroundCache::Config.from_params_and_fragment(params, key)
+      if cache
+        nil
+      else
+        read_fragment_without_background_cache(key, options)
+      end
+    end
+    
     class BackgroundCacheFilter
       def before(controller)
         # Execute?

@@ -8,12 +8,11 @@ describe BackgroundCache do
     ActionController::Dispatcher.new
   end
   
-  describe :Controller do
+  before(:each) do
+    BackgroundCache::Config.unload!
+  end
   
-    it "should use our version of the cache method" do
-      BackgroundCache::Config.should_receive(:from_params_and_fragment).twice
-      get('/')
-    end
+  describe :Controller do
   
     it "should call load! with background_cache_load parameter" do
       key = BackgroundCache.set_key!
@@ -31,6 +30,14 @@ describe BackgroundCache do
       key = BackgroundCache.set_key!
       BackgroundCache::Config.should_receive(:from_params)
       get('/', { :background_cache => key })
+    end
+    
+    it "should alias read_fragment and return null when it is called on matching cache" do
+      key = BackgroundCache.set_key!
+      get('/', { :background_cache_load => key })
+      ::ActionController::Base.cache_store.write('views/test_3', 'bust me')
+      get('/t3', { :background_cache => key })
+      last_response.body.should == 'nil'
     end
   end
   

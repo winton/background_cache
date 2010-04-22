@@ -44,4 +44,5 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '/', :controller => 'application', :action => 'test_1'
   map.connect '/t2', :controller => 'application', :action => 'test_2'
+  map.connect '/t3', :controller => 'application', :action => 'test_3'
 end
