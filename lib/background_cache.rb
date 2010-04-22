@@ -34,8 +34,6 @@ module BackgroundCache
         ::ActionController::Base.cache_store.write(id, Time.now.to_i)
       end
     end
-    # Unload the application background cache config
-    instance.get("/?background_cache_unload=#{key}")
   end
   def self.set_key!
     key = BackgroundCache::Config.key

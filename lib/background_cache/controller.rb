@@ -20,8 +20,7 @@ module BackgroundCache
       def before(controller)
         @background_cache = {
           :key => controller.params.delete("background_cache"),
-          :load => controller.params.delete("background_cache_load"),
-          :unload => controller.params.delete("background_cache_unload")
+          :load => controller.params.delete("background_cache_load")
         }
         if @background_cache[:key]
           # Secure filters
@@ -43,15 +42,12 @@ module BackgroundCache
         if @background_cache[:layout]
           controller.class.layout(@background_cache[:layout])
         end
-        if @background_cache[:load] || @background_cache[:unload]
+        if @background_cache[:load]
           # Secure filters
           key = ::ActionController::Base.cache_store.read('background_cache/key')
           # Load the background cache config
           if @background_cache[:load] == key
             BackgroundCache::Config.load!
-          # Unload the background cache config
-          elsif @background_cache[:unload] == key
-            BackgroundCache::Config.unload!
           end
         end
       end

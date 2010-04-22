@@ -20,12 +20,6 @@ describe BackgroundCache do
       get('/', { :background_cache_load => key })
     end
   
-    it "should call unload! with background_cache_unload parameter" do
-      key = BackgroundCache.set_key!
-      BackgroundCache::Config.should_receive(:unload!)
-      get('/', { :background_cache_unload => key })
-    end
-  
     it "should call from_params with background_cache parameter" do
       key = BackgroundCache.set_key!
       BackgroundCache::Config.should_receive(:from_params)
