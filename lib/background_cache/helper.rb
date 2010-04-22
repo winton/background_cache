@@ -4,7 +4,7 @@ module BackgroundCache
       base.alias_method_chain :cache, :background_cache
     end
     def cache_with_background_cache(name = {}, options = nil, &block)
-      cache = BackgroundCache::Config.from_params_and_fragment(params, name)
+      cache = BackgroundCache::Config.from_controller_and_fragment(controller, name)
       if cache
         # http://api.rubyonrails.org/classes/ActionView/Helpers/CacheHelper.html
         # http://api.rubyonrails.org/classes/ActionController/Caching/Fragments.html

@@ -16,6 +16,7 @@ module BackgroundCache
         :every => options.delete(:every),
         :layout => options.delete(:layout),
         :only => options.delete(:only),
+        :path => options.delete(:path),
         :params => options
       })
     end
@@ -41,15 +42,20 @@ module BackgroundCache
       self
     end
     # Find cache config from params
-    def self.from_params(params)
-      params.delete 'background_cache'
-      from_params_and_fragment(params)
+    def self.from_controller(controller)
+      from_controller_and_fragment(controller)
     end
-    def self.from_params_and_fragment(params, fragment={})
+    def self.from_controller_and_fragment(controller, fragment={})
+      params = controller.params
+      params.delete 'background_cache'
+      path = controller.request.env['PATH_INFO']
       if defined?(@@caches) && !@@caches.empty?
         found = @@caches.select { |item|
           # Basic params match (action, controller, etc)
-          item[:params] == params.symbolize_keys &&
+          (
+            (item[:path] && item[:path] == path) ||
+            item[:params] == params.symbolize_keys
+          ) &&
           (
             # No fragment specified
             fragment.empty? ||

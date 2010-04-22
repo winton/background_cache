@@ -8,7 +8,7 @@ module BackgroundCache
     private
     
     def read_fragment_with_background_cache(key, options=nil)
-      cache = BackgroundCache::Config.from_params_and_fragment(params, key)
+      cache = BackgroundCache::Config.from_controller_and_fragment(self, key)
       if cache
         nil
       else
@@ -27,7 +27,7 @@ module BackgroundCache
           key = ::ActionController::Base.cache_store.read('background_cache/key')
           # Turn off the layout if necessary
           if @background_cache[:key] == key
-            cache = BackgroundCache::Config.from_params(controller.params)
+            cache = BackgroundCache::Config.from_controller(controller)
             # Store current layout, then disable it
             if cache && cache[:layout] == false
               @background_cache[:layout] = controller.active_layout

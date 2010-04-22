@@ -25,11 +25,10 @@ module BackgroundCache
       expired_at = ::ActionController::Base.cache_store.read(id).to_i
       # If last expired doesn't exist or is older than :every
       if !expired_at || !cache[:every] || Time.now.to_i - expired_at >= cache[:every].to_i
+        # Get URL
+        url = cache[:path] || instance.url_for(cache[:params].merge(:only_path => true))
         # Request action with ?background_cache
-        instance.get(
-          instance.url_for(cache[:params].merge(:only_path => true)) +
-          "?background_cache=#{key}"
-        )
+        instance.get(url + "?background_cache=#{key}")
         # Update last expired time
         ::ActionController::Base.cache_store.write(id, Time.now.to_i)
       end
