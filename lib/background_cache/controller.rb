@@ -18,38 +18,41 @@ module BackgroundCache
     
     class BackgroundCacheFilter
       def before(controller)
-        # Execute?
-        execute = controller.params[:background_cache_load] ||
-          controller.params[:background_cache_unload] ||
-          controller.params[:background_cache]
-        if execute
+        @background_cache = {
+          :key => controller.params.delete("background_cache"),
+          :load => controller.params.delete("background_cache_load"),
+          :unload => controller.params.delete("background_cache_unload")
+        }
+        if @background_cache[:key]
           # Secure filters
           key = ::ActionController::Base.cache_store.read('background_cache/key')
-          # Load the background cache config (stay dynamic)
-          if controller.params[:background_cache_load] == key
-            BackgroundCache::Config.load!
-          # Unload the background cache config
-          elsif controller.params[:background_cache_unload] == key
-            BackgroundCache::Config.unload!
-          # Reload the cache for an entire page, action, or fragment
-          elsif controller.params[:background_cache] == key
-            @cache = BackgroundCache::Config.from_params(controller.params)
+          # Turn off the layout if necessary
+          if @background_cache[:key] == key
+            cache = BackgroundCache::Config.from_params(controller.params)
             # Store current layout, then disable it
-            if @cache && @cache[:layout] == false
-              @layout = controller.active_layout
+            if cache && cache[:layout] == false
+              @background_cache[:layout] = controller.active_layout
               controller.class.layout(false)
             end
           end
-          controller.params.delete("background_cache")
-          controller.params.delete("background_cache_load")
-          controller.params.delete("background_cache_unload")
         end
         true
       end
       def after(controller)
         # Restore layout
-        if @cache && @cache[:layout] == false
-          controller.class.layout(@layout)
+        if @background_cache[:layout]
+          controller.class.layout(@background_cache[:layout])
+        end
+        if @background_cache[:load] || @background_cache[:unload]
+          # Secure filters
+          key = ::ActionController::Base.cache_store.read('background_cache/key')
+          # Load the background cache config
+          if @background_cache[:load] == key
+            BackgroundCache::Config.load!
+          # Unload the background cache config
+          elsif @background_cache[:unload] == key
+            BackgroundCache::Config.unload!
+          end
         end
       end
     end
