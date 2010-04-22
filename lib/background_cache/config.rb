@@ -50,7 +50,7 @@ module BackgroundCache
       params.delete 'background_cache'
       path = controller.request.env['PATH_INFO']
       if defined?(@@caches) && !@@caches.empty?
-        found = @@caches.select { |item|
+        @@caches.detect do |item|
           # Basic params match (action, controller, etc)
           (
             (item[:path] && item[:path] == path) ||
@@ -86,8 +86,7 @@ module BackgroundCache
               )
             )
           )
-        }[0]
-        found
+        end
       end
     end
     def self.caches

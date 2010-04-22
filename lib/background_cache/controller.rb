@@ -10,6 +10,7 @@ module BackgroundCache
     def read_fragment_with_background_cache(key, options=nil)
       cache = BackgroundCache::Config.from_controller_and_fragment(self, key)
       if cache
+        RAILS_DEFAULT_LOGGER.info "Cached fragment busted (read_fragment method): #{key}"
         nil
       else
         read_fragment_without_background_cache(key, options)
