@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + "/spec_helper"
 
+COMMENT_REGEX = /<!-- ".+" cached .+ -->\n/
+
 describe BackgroundCache do
 
   include Rack::Test::Methods
@@ -54,12 +56,12 @@ describe BackgroundCache do
       it "should bust the cache" do
         ::ActionController::Base.cache_store.write('views/test', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test').should == 'test'
+        ::ActionController::Base.cache_store.read('views/test').gsub(COMMENT_REGEX, '').should == 'test'
       end
       
       it "should render the layout" do
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/layout_test_1').should == '1'
+        ::ActionController::Base.cache_store.read('views/layout_test_1').gsub(COMMENT_REGEX, '').should == '1'
       end
     end
     
@@ -76,7 +78,7 @@ describe BackgroundCache do
       it "should bust the cache" do
         ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'test 2'
+        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
       end
       
       it "should not bust the excluded cache" do
@@ -93,14 +95,14 @@ describe BackgroundCache do
       it "should not bust the cache until a minute later" do
         ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'test 2'
+        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
         ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
         BackgroundCache.cache!
         ::ActionController::Base.cache_store.read('views/test_2').should == 'bust me'
         time_now = Time.now
         Time.stub!(:now).and_return(time_now + 1.minute)
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'test 2'
+        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
       end
     end
   end
