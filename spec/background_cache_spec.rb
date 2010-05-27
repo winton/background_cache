@@ -22,7 +22,7 @@ describe BackgroundCache do
       get('/', { :background_cache_load => key })
     end
   
-    it "should call from_params with background_cache parameter" do
+    it "should call from_controller with background_cache parameter" do
       key = BackgroundCache.set_key!
       BackgroundCache::Config.should_receive(:from_controller)
       get('/', { :background_cache => key })

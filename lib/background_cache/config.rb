@@ -48,7 +48,7 @@ module BackgroundCache
     def self.from_controller_and_fragment(controller, fragment={})
       params = controller.params
       params.delete 'background_cache'
-      path = controller.request.env['PATH_INFO']
+      path = controller.request.env['REQUEST_URI'].gsub(/[&?]background_cache=.+/, '')
       if defined?(@@caches) && !@@caches.empty?
         @@caches.detect do |item|
           # Basic params match (action, controller, etc)

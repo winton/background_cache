@@ -28,7 +28,7 @@ module BackgroundCache
         # Get URL
         url = cache[:path] || instance.url_for(cache[:params].merge(:only_path => true))
         # Request action with ?background_cache
-        instance.get(url + "?background_cache=#{key}")
+        instance.get(url + "#{url.include?('?') ? '&' : '?'}background_cache=#{key}")
         # Update last expired time
         ::ActionController::Base.cache_store.write(id, Time.now.to_i)
       end
