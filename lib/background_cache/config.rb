@@ -14,6 +14,7 @@ module BackgroundCache
       @@caches.push({
         :except => options.delete(:except),
         :every => options.delete(:every),
+        :group => options.delete(:group),
         :layout => options.delete(:layout),
         :only => options.delete(:only),
         :path => options.delete(:path),
@@ -25,6 +26,9 @@ module BackgroundCache
     end
     def every(value, &block)
       set_option(:every, value, &block)
+    end
+    def group(value, &block)
+      set_options(:group, value, &block)
     end
     def layout(value, &block)
       set_option(:layout, value, &block)

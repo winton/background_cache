@@ -9,7 +9,7 @@ module BackgroundCache
       ActionController::Dispatcher.new
     end
   end
-  def self.cache!
+  def self.cache!(group=nil)
     key = set_key!
     # Used to make requests
     instance = AppInstance.new
@@ -19,6 +19,7 @@ module BackgroundCache
     load RAILS_ROOT + "/lib/background_cache_config.rb"
     caches = BackgroundCache::Config.caches
     caches.each do |cache|
+      next if group && cache[:group] != group
       # Unique cache id for storing last expired time
       id = BackgroundCache::Config.unique_cache_id(cache)
       # Find out when this cache was last expired

@@ -1,4 +1,4 @@
 desc "Background cache cron job"
-task :background_cache => :environment do
-  BackgroundCache.cache!
+task :background_cache, :group, :needs => :environment do |t, args|
+  BackgroundCache.cache! args[:group]
 end
