@@ -28,7 +28,7 @@ module BackgroundCache
       set_option(:every, value, &block)
     end
     def group(value, &block)
-      set_options(:group, value, &block)
+      set_option(:group, value, &block)
     end
     def layout(value, &block)
       set_option(:layout, value, &block)
