@@ -4,7 +4,7 @@ module BackgroundCache
   class Config
     def initialize(&block)
       @@caches = []
-      yield self
+      self.instance_eval &block
     end
     def cache(options)
       # Method-style config
