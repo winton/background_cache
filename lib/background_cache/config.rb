@@ -13,7 +13,6 @@ module BackgroundCache
       # Store the cache options
       @@caches.push({
         :except => options.delete(:except),
-        :every => options.delete(:every),
         :group => options.delete(:group),
         :layout => options.delete(:layout),
         :only => options.delete(:only),
@@ -23,9 +22,6 @@ module BackgroundCache
     end
     def except(value, &block)
       set_option(:except, value, &block)
-    end
-    def every(value, &block)
-      set_option(:every, value, &block)
     end
     def group(value, &block)
       set_option(:group, value, &block)
