@@ -91,19 +91,6 @@ describe BackgroundCache do
         BackgroundCache.cache!
         ::ActionController::Base.cache_store.read('views/layout_test_2').should == nil
       end
-      
-      it "should not bust the cache until a minute later" do
-        ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
-        BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
-        ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
-        BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'bust me'
-        time_now = Time.now
-        Time.stub!(:now).and_return(time_now + 1.minute)
-        BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
-      end
     end
   end
 end
