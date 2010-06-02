@@ -30,8 +30,9 @@ module BackgroundCache
   def self.manual(url)
     key = set_key!
     instance = AppInstance.new
-    url = instance.url_for(url) if url.respond_to?(:keys)
+    url = instance.url_for(url.merge(:only_path => true)) if url.respond_to?(:keys)
     instance.get(url + "#{url.include?('?') ? '&' : '?'}background_cache=#{key}")
+    url
   end
   def self.set_key!
     key = BackgroundCache::Config.key
