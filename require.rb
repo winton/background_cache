@@ -18,7 +18,7 @@ Require do
     name 'background_cache'
     homepage "http://github.com/winton/#{name}"
     summary "Bust caches before your users do"
-    version '0.1.0'
+    version '0.1.1'
   end
   
   bin { require 'lib/background_cache' }
