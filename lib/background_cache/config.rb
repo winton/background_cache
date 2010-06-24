@@ -90,7 +90,7 @@ module BackgroundCache
       end
     end
     def self.caches
-      @@caches
+      @@caches if defined?(@@caches)
     end
     def self.key
       Digest::SHA256.hexdigest("--#{Time.now}--#{rand}--")
