@@ -50,8 +50,7 @@ module BackgroundCache
     end
     def self.from_controller_and_fragment(controller, fragment={})
       params = controller.params
-      params.delete 'background_cache'
-      path = controller.request.env['REQUEST_URI'].gsub(/[&?]background_cache=.+/, '')
+      path = controller.request.env['REQUEST_URI']
       cache =
         if defined?(@@caches) && !@@caches.empty?
           @@caches.detect do |item|
@@ -98,7 +97,7 @@ module BackgroundCache
       cache
     end
     def self.caches
-      @@caches if defined?(@@caches)
+      defined?(@@caches) ? @@caches : []
     end
     def self.key
       Digest::SHA256.hexdigest("--#{Time.now}--#{rand}--")

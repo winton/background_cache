@@ -12,7 +12,7 @@ module BackgroundCache
   end
   
   def self.cache!(group=nil)
-    instance = boot
+    instance = self.boot
     caches = BackgroundCache::Config.caches
     caches.each do |cache|
       next if group && cache[:group] != group
@@ -23,7 +23,7 @@ module BackgroundCache
   end
   
   def self.manual(url)
-    instance = boot
+    instance = self.boot
     BackgroundCache::Config.manual = true
     url = instance.url_for(url.merge(:only_path => true)) if url.respond_to?(:keys)
     instance.get(url)
