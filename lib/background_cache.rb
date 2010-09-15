@@ -12,37 +12,30 @@ module BackgroundCache
   end
   
   def self.cache!(group=nil)
-    key, instance = boot
+    instance = boot
     caches = BackgroundCache::Config.caches
     caches.each do |cache|
       next if group && cache[:group] != group
       url = cache[:path] || instance.url_for(cache[:params].merge(:only_path => true))
       puts "(#{cache[:group]}) #{url}"
-      instance.get(url + "#{url.include?('?') ? '&' : '?'}background_cache=#{key}")
+      instance.get(url)
     end
   end
   
   def self.manual(url)
-    key, instance = boot
+    instance = boot
+    BackgroundCache::Config.manual = true
     url = instance.url_for(url.merge(:only_path => true)) if url.respond_to?(:keys)
-    instance.get(url + "#{url.include?('?') ? '&' : '?'}background_cache=#{key}")
+    instance.get(url)
     url
   end
   
   private
   
   def self.boot
-    key = set_key!
     instance = AppInstance.new
-    instance.get("/?background_cache_load=#{key}")
-    load RAILS_ROOT + "/lib/background_cache_config.rb"
-    [ key, instance ]
-  end
-  
-  def self.set_key!
-    key = BackgroundCache::Config.key
-    ::ActionController::Base.cache_store.write('background_cache/key', key)
-    key
+    BackgroundCache::Config.load!
+    instance
   end
 end
 

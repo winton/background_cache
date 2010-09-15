@@ -2,6 +2,9 @@ require 'digest/sha2'
 
 module BackgroundCache
   class Config
+    class <<self
+      attr_accessor :manual
+    end
     def initialize(&block)
       @@caches = []
       self.instance_eval &block
@@ -49,45 +52,50 @@ module BackgroundCache
       params = controller.params
       params.delete 'background_cache'
       path = controller.request.env['REQUEST_URI'].gsub(/[&?]background_cache=.+/, '')
-      if defined?(@@caches) && !@@caches.empty?
-        @@caches.detect do |item|
-          # Basic params match (action, controller, etc)
-          (
-            (item[:path] && item[:path] == path) ||
-            item[:params] == params.symbolize_keys
-          ) &&
-          (
-            # No fragment specified
-            fragment.empty? ||
+      cache =
+        if defined?(@@caches) && !@@caches.empty?
+          @@caches.detect do |item|
+            # Basic params match (action, controller, etc)
             (
+              (item[:path] && item[:path] == path) ||
+              item[:params] == params.symbolize_keys
+            ) &&
+            (
+              # No fragment specified
+              fragment.empty? ||
               (
-                # :only not defined
-                !item[:only] ||
-                # :only matches fragment
-                item[:only] == fragment ||
                 (
-                  # :only is an array
-                  item[:only].respond_to?(:index) &&
-                  # :only includes matching fragment
-                  item[:only].include?(fragment)
-                )
-              ) &&
-              (
-                # :except not defined
-                !item[:except] ||
-                # :except not explicitly named
-                item[:except] != fragment ||
+                  # :only not defined
+                  !item[:only] ||
+                  # :only matches fragment
+                  item[:only] == fragment ||
+                  (
+                    # :only is an array
+                    item[:only].respond_to?(:index) &&
+                    # :only includes matching fragment
+                    item[:only].include?(fragment)
+                  )
+                ) &&
                 (
-                  # :except is an array
-                  item[:except].respond_to?(:index) &&
-                  # :except does not include matching fragment
-                  !item[:except].include?(fragment)
+                  # :except not defined
+                  !item[:except] ||
+                  # :except not explicitly named
+                  item[:except] != fragment ||
+                  (
+                    # :except is an array
+                    item[:except].respond_to?(:index) &&
+                    # :except does not include matching fragment
+                    !item[:except].include?(fragment)
+                  )
                 )
               )
             )
-          )
+          end
         end
+      if !cache && self.manual
+        cache = { :path => path, :layout => false }
       end
+      cache
     end
     def self.caches
       @@caches if defined?(@@caches)
@@ -100,22 +108,7 @@ module BackgroundCache
     end
     def self.unload!
       @@caches = []
-    end
-    # Unique cache id for storing last expired time
-    def self.unique_cache_id(cache)
-      id = []
-      join = lambda do |k, v|
-        id << (k.nil? || v.nil? ?
-          nil : [ k, v ].collect { |kv| kv.to_s.gsub(/\W/, '_') }.join('-')
-        )
-      end
-      cache[:params].each do |key, value|
-        join.call(key, value)
-      end
-      cache.each do |key, value|
-        join.call(key, value) unless key == :params
-      end
-      'background_cache/' + id.compact.join('/')
+      self.manual = nil
     end
   end
 end
