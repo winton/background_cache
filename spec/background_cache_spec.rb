@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + "/spec_helper"
 
-COMMENT_REGEX = /<!-- ".+" cached .+ -->\n/
-
 describe BackgroundCache do
 
   include Rack::Test::Methods
@@ -31,7 +29,7 @@ describe BackgroundCache do
     it "should alias read_fragment and return null when it is called on matching cache" do
       key = BackgroundCache.set_key!
       get('/', { :background_cache_load => key })
-      ::ActionController::Base.cache_store.write('views/test_3', 'bust me')
+      cache_write('test_3', 'bust me')
       get('/t3', { :background_cache => key })
       last_response.body.should == 'nil'
     end
@@ -47,21 +45,21 @@ describe BackgroundCache do
     
       it "should be caching normally" do
         get('/')
-        ::ActionController::Base.cache_store.read('views/test').should == 'test'
-        ::ActionController::Base.cache_store.write('views/test', 'bust me')
+        cache_read('test').should == 'test'
+        cache_write('test', 'bust me')
         get('/')
-        ::ActionController::Base.cache_store.read('views/test').should == 'bust me'
+        cache_read('test').should == 'bust me'
       end
     
       it "should bust the cache" do
-        ::ActionController::Base.cache_store.write('views/test', 'bust me')
+        cache_write('test', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test').gsub(COMMENT_REGEX, '').should == 'test'
+        cache_read('test').should == 'test'
       end
       
       it "should render the layout" do
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/layout_test_1').gsub(COMMENT_REGEX, '').should == '1'
+        cache_read('layout_test_1').should == '1'
       end
     end
     
@@ -69,27 +67,27 @@ describe BackgroundCache do
     
       it "should be caching normally" do
         get('/t2')
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'test 2'
-        ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
+        cache_read('test_2').should == 'test 2'
+        cache_write('test_2', 'bust me')
         get('/t2')
-        ::ActionController::Base.cache_store.read('views/test_2').should == 'bust me'
+        cache_read('test_2').should == 'bust me'
       end
     
       it "should bust the cache" do
-        ::ActionController::Base.cache_store.write('views/test_2', 'bust me')
+        cache_write('test_2', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_2').gsub(COMMENT_REGEX, '').should == 'test 2'
+        cache_read('test_2').should == 'test 2'
       end
       
       it "should not bust the excluded cache" do
-        ::ActionController::Base.cache_store.write('views/test_1', 'bust me')
+        cache_write('test_1', 'bust me')
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/test_1').should == 'bust me'
+        cache_read('test_1').should == 'bust me'
       end
       
       it "should not render the layout" do
         BackgroundCache.cache!
-        ::ActionController::Base.cache_store.read('views/layout_test_2').should == nil
+        cache_read('layout_test_2').should == nil
       end
     end
   end
