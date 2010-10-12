@@ -9,6 +9,6 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   
   def test_3
-    render :text => read_fragment('test_3').inspect, :layout => false
+    render :text => read_fragment('test_3').inspect, :layout => true
   end
 end

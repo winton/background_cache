@@ -18,16 +18,12 @@ describe BackgroundCache do
       BackgroundCache::Config.should_receive(:load!)
       BackgroundCache.cache!
     end
-  
-    it "should call from_controller when cached request happens" do
-      BackgroundCache.cache!
-      BackgroundCache::Config.should_receive(:from_controller)
-      get('/')
-    end
     
     it "should alias read_fragment and return null when it is called on matching cache" do
       BackgroundCache.cache!
-      get('/')
+      BackgroundCache::Config.current_cache = BackgroundCache::Config.caches.detect do |cache|
+        cache[:params][:action] == 'test_3'
+      end
       cache_write('test_3', 'bust me')
       get('/t3')
       last_response.body.should == 'nil'
@@ -74,12 +70,12 @@ describe BackgroundCache do
     
       it "should bust the cache (manual override)" do
         cache_write('test', 'bust me')
-        BackgroundCache.manual('/b')
+        BackgroundCache('/b')
         cache_read('test').should == 'test'
       end
       
       it "should not render the layout" do
-        BackgroundCache.manual('/b')
+        BackgroundCache('/b')
         cache_read('layout_test_1').should == nil
       end
     end
@@ -109,6 +105,22 @@ describe BackgroundCache do
       it "should not render the layout" do
         BackgroundCache.cache!
         cache_read('layout_test_2').should == nil
+      end
+    end
+    
+    describe :test_3 do
+    
+      it "should be caching normally" do
+        get('/t3')
+        cache_read('layout_test_3').should == '1'
+        cache_write('layout_test_3', 'bust me')
+        get('/t3')
+        cache_read('layout_test_3').should == 'bust me'
+      end
+      
+      it "should not render the layout" do
+        BackgroundCache.cache!
+        cache_read('layout_test_3').should == nil
       end
     end
   end

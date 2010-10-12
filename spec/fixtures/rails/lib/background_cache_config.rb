@@ -1,15 +1,15 @@
-BackgroundCache::Config.new do |config|
-  config.cache(
-    :path => '/'
-  )
-  config.layout(false).only('test_2') do
-    config.cache(
+BackgroundCache::Config.new do
+  cache(:path => '/')
+  layout(false) do
+    only('test_2') do
+      cache(
+        :controller => 'application',
+        :action => 'test_2'
+      )
+    end
+    cache(
       :controller => 'application',
-      :action => 'test_2'
+      :action => 'test_3'
     )
   end
-  config.cache(
-    :controller => 'application',
-    :action => 'test_3'
-  )
 end

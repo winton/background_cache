@@ -6,7 +6,7 @@ Require.spec_helper!
 Spec::Runner.configure do |config|
 end
 
-COMMENT_REGEX = /<!-- ".+" cached .+ -->\n/
+COMMENT_REGEX = /<!-- .+ cached .+ -->\n/
 
 def cache_read(key)
   value = ::ActionController::Base.cache_store.read('views/' + key)
