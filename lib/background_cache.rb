@@ -17,6 +17,7 @@ module BackgroundCache
 
   def self.cache!(group=nil)
     instance = self.boot
+    BackgroundCache::Config.load!(group)
     caches = BackgroundCache::Config.caches
     caches.each do |cache|
       next if group && cache[:group] != group
@@ -44,7 +45,6 @@ module BackgroundCache
 
   def self.boot
     instance = AppInstance.new
-    BackgroundCache::Config.load!
     instance
   end
 end

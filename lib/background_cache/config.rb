@@ -4,7 +4,7 @@ module BackgroundCache
   class Config
     
     class <<self
-      attr_accessor :current_cache
+      attr_accessor :current_cache, :group
     end
     
     def initialize(&block)
@@ -23,7 +23,9 @@ module BackgroundCache
     end
     
     def group(value, &block)
-      set_option({ :group => value }, &block)
+      if self.class.group.nil? || value == self.class.group
+        set_option({ :group => value }, &block)
+      end
     end
     
     def layout(value, &block)
@@ -84,7 +86,7 @@ module BackgroundCache
             cache[:only] == fragment ||
             (
               # :only is an array
-              cache[:only].respond_to?(:index) &&
+              cache[:only].respond_to?(:compact) &&
               # :only includes matching fragment
               cache[:only].include?(fragment)
             )
@@ -96,7 +98,7 @@ module BackgroundCache
             cache[:except] != fragment ||
             (
               # :except is an array
-              cache[:except].respond_to?(:index) &&
+              cache[:except].respond_to?(:compact) &&
               # :except does not include matching fragment
               !cache[:except].include?(fragment)
             )
@@ -109,8 +111,10 @@ module BackgroundCache
       defined?(@@caches) ? @@caches : []
     end
     
-    def self.load!
+    def self.load!(group=nil)
+      self.group = group
       load RAILS_ROOT + "/lib/background_cache_config.rb"
+      self.group = nil
     end
     
     def self.unload!
