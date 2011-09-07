@@ -13,7 +13,7 @@ module BackgroundCache
         cache = @controller.read_fragment(name, options)
         match = (
           BackgroundCache.active? &&
-          BackgroundCache.match?(controller, name)
+          BackgroundCache.match?(name)
         )
         if !cache || match
           pos = output_buffer.length

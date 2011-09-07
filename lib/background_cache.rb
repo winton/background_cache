@@ -37,8 +37,8 @@ module BackgroundCache
     url
   end
   
-  def self.match?(controller, fragment={})
-    BackgroundCache::Config.match?(controller, fragment)
+  def self.match?(fragment={})
+    BackgroundCache::Config.match?(fragment)
   end
 
   private
@@ -49,10 +49,10 @@ module BackgroundCache
   end
 end
 
-def BackgroundCache(path)
+def BackgroundCache(path, layout=false)
   BackgroundCache.manual(
     BackgroundCache::Config.build_cache(
-      path.respond_to?(:keys) ? path : { :path => path, :layout => false }
+      path.respond_to?(:keys) ? path : { :path => path, :layout => layout }
     )
   )
 end

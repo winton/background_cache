@@ -10,7 +10,7 @@ module BackgroundCache
     private
     
     def read_fragment_with_background_cache(key, options=nil)
-      if BackgroundCache.active? && BackgroundCache.match?(self, key)
+      if BackgroundCache.active? && BackgroundCache.match?(key)
         RAILS_DEFAULT_LOGGER.info "Cached fragment busted (read_fragment method): #{key}"
         nil
       else

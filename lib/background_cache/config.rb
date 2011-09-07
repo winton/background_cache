@@ -65,16 +65,10 @@ module BackgroundCache
     end
     
     # Does controller and fragment match current cache?
-    def self.match?(controller, fragment={})
-      params = controller.params
-      path = controller.request.env['REQUEST_URI']
+    def self.match?(fragment={})
       cache = self.current_cache
       cache &&
       # Basic params match (action, controller, etc)
-      (
-        (cache[:path] && cache[:path] == path) ||
-        cache[:params] == params.symbolize_keys
-      ) &&
       (
         # No fragment specified
         fragment.empty? ||
