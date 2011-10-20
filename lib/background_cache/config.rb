@@ -1,5 +1,3 @@
-require 'digest/sha2'
-
 module BackgroundCache
   class Config
     

@@ -1,12 +1,14 @@
-RAILS_ENV = 'production'
+require "pp"
+require "bundler"
 
-require File.expand_path("#{File.dirname(__FILE__)}/../require")
-Require.spec_helper!
-
-Spec::Runner.configure do |config|
-end
+Bundler.require(:development)
 
 COMMENT_REGEX = /<!-- .+ cached .+ -->\n/
+RAILS_ENV = 'production'
+
+require 'spec/fixtures/rails/config/environment'
+
+$root = File.expand_path('../../', __FILE__)
 
 def cache_read(key)
   value = ::ActionController::Base.cache_store.read('views/' + key)

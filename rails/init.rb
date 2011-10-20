@@ -3,8 +3,7 @@ begin
 rescue LoadError
 end
 
-require File.expand_path("#{File.dirname(__FILE__)}/../require")
-Require.rails_init!
+require File.expand_path('../../lib/background_cache.rb', __FILE__)
 
 ActionController::Base.send(:include, BackgroundCache::Controller)
 ActionView::Helpers::CacheHelper.send(:include, BackgroundCache::Helper)

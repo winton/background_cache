@@ -1,7 +1,7 @@
 .DS_Store
 *.gem
-*.gemspec
-coverage
+.bundle
+Gemfile.lock
 pkg
 spec/fixtures/rails/log/*
 tmp

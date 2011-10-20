@@ -1,5 +1,14 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../require")
-Require.lib!
+gem 'rack-test', '=0.5.3'
+
+require 'digest/sha2'
+require 'rack/test'
+
+$:.unshift File.dirname(__FILE__)
+
+require 'background_cache/config'
+require 'background_cache/controller'
+require 'background_cache/helper'
+require 'background_cache/mem_cache'
 
 module BackgroundCache
   
