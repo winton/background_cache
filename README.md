@@ -13,7 +13,7 @@ Requirements
 Dynamic Configuration
 ---------------------
 
-Create *lib/background\_cache\_config.rb* in your Rails app:
+Create `lib/background_cache_config.rb` in your Rails app:
 
     BackgroundCache::Config.new do
 
