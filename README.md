@@ -3,6 +3,8 @@ BackgroundCache
 
 Bust caches before your users do (in your Rails app).
 
+Works with [memcache-client](https://github.com/mperham/memcache-client), [Dalli](https://github.com/mperham/dalli), or [memcached](https://github.com/fauna/memcached).
+
 Requirements
 ------------
 
