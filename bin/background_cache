@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 
-require File.expand_path("../../lib/background_cache", __FILE__)
+require File.expand_path("../../lib/background_cache/daemon", __FILE__)
+
+BackgroundCache::Daemon.new(Dir.pwd)

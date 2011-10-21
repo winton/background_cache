@@ -22,4 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack-test", "= 0.5.3"
   s.add_development_dependency "rails", "= 2.3.10"
   s.add_development_dependency "rspec", "~> 1.0"
+
+  s.add_dependency "redis", "~> 2.2.2"
+  s.add_dependency "yajl-ruby", "~> 1.0.0"
 end
