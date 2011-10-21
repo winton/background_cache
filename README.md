@@ -70,10 +70,10 @@ Run caches via Ruby:
 
     require 'background_cache'
 
-    client = BackgroundCache::Client.new('/path/to/app/config/background_cache.yml')
+    client = BackgroundCache::Client.new('/path/to/app')
 
     # Cache group
-    client.cache(:every_hour)
+    client.cache(:group => "every_hour")
 
     # Manual cache
     client.cache(:path => "/")
