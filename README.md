@@ -52,7 +52,7 @@ Rake Task
 
 Add `rake background_cache` to cron. All cache configurations are busted every time it is run.
 
-To run a specific group of caches, run `rake background\_cache[every\_hour]` (as per the example above).
+To run a specific group of caches, run `rake background_cache[every_hour]` (as per the example above).
 
 Daemon Mode
 -----------
