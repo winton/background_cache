@@ -1,15 +1,10 @@
 require 'rubygems'
 
-gem 'rack-test', '=0.5.3'
-
-gem "yajl-ruby", "~> 1.0.0"
+require "rack/test"
+require "redis"
 require "yajl"
 
-gem "redis", "~> 2.2.2"
-require "redis"
-
 require 'digest/sha2'
-require 'rack/test'
 require 'yaml'
 
 $:.unshift File.dirname(__FILE__)

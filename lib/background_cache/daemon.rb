@@ -4,11 +4,8 @@ require "digest/sha1"
 require "timeout"
 require "yaml"
 
-gem "yajl-ruby", "~> 1.0.0"
-require "yajl"
-
-gem "redis", "~> 2.2.2"
 require "redis"
+require "yajl"
 
 module BackgroundCache
   class Daemon
