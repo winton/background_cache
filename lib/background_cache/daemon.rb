@@ -31,6 +31,7 @@ module BackgroundCache
         while true
           request = redis.lpop('background_cache:request')
           if request
+            puts request.inspect
             Timeout.timeout(60) do
               request = Yajl::Parser.parse(request)
               channel = request.delete('channel')

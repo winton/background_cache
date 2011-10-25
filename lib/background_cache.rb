@@ -18,10 +18,18 @@ require 'background_cache/mem_cache'
 module BackgroundCache
   
   class AppInstance
-    include ActionController::UrlWriter
+    if defined?(ActionDispatch::Routing::UrlFor)
+      include ActionDispatch::Routing::UrlFor
+    elsif defined?(ActionController::UrlWriter)
+      include ActionController::UrlWriter
+    end
     include Rack::Test::Methods
     def app
-      ActionController::Dispatcher.new
+      if defined?(Rails::Application)
+        Rails::Application.subclasses.first
+      elsif defined?(ActionController::Dispatcher)
+        ActionController::Dispatcher.new
+      end
     end
   end
   
@@ -42,6 +50,7 @@ module BackgroundCache
   end
 
   def self.manual(cache, instance=nil)
+    ENV['BACKGROUND_CACHE'] = '1'
     unless instance
       instance = self.boot
     end
