@@ -11,7 +11,12 @@ module BackgroundCache
   class Daemon
 
     def initialize(root)
-      options = self.class.options
+      if File.exists?(yaml = "#{root}/config/background_cache.yml")
+        options = YAML.load(File.read(yaml))
+      else
+        puts "\nFAIL: config/background_cache.yml not found"
+        shut_down
+      end
 
       puts "\nStarting background cache server (redis @ #{options['redis']})..."
 
@@ -77,23 +82,6 @@ module BackgroundCache
     def shut_down
       puts "\nShutting down background cache server..."
       exit
-    end
-
-    def self.options
-      if File.exists?(yaml = "#{root}/config/background_cache.yml")
-        YAML.load(File.read(yaml))
-      else
-        puts "\nFAIL: config/background_cache.yml not found"
-        shut_down
-      end
-    end
-
-    def self.queued
-      redis = Redis.connect(:url => "redis://#{options['redis']}")
-      queues = redis.keys 'background_cache:queue:*'
-      queues.collect do |q|
-        queue['background_cache:queue:'.length..-1]
-      end
     end
   end
 end

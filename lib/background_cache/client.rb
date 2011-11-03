@@ -42,5 +42,12 @@ module BackgroundCache
 
       response
     end
+
+    def queued
+      queues = @redis_2.keys 'background_cache:queue:*'
+      queues.collect do |q|
+        queue['background_cache:queue:'.length..-1]
+      end
+    end
   end
 end
