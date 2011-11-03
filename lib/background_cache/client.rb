@@ -46,7 +46,7 @@ module BackgroundCache
     def queued
       queues = @redis_2.keys 'background_cache:queue:*'
       queues.collect do |q|
-        q['background_cache:queue:'.length..-1]
+        Hash[*eval(q['background_cache:queue:'.length..-1]).flatten]
       end
     end
   end
