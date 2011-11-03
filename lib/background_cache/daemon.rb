@@ -36,7 +36,7 @@ module BackgroundCache
               request = Yajl::Parser.parse(request)
               channel = request.delete('channel')
 
-              cache_key = request.to_a.sort { |a, b| a.first <=> b.first }.inspect
+              cache_key = 'background_cache:queue:' + request.to_a.sort { |a, b| a.first <=> b.first }.inspect
 
               request.keys.each do |key|
                 request[(key.to_sym rescue key) || key] = request.delete(key)
