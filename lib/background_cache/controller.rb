@@ -11,7 +11,7 @@ module BackgroundCache
     
     def read_fragment_with_background_cache(key, options=nil)
       if BackgroundCache.active? && BackgroundCache.match?(key)
-        RAILS_DEFAULT_LOGGER.info "Cached fragment busted (read_fragment method): #{key}"
+        Rails.logger.info "Cached fragment busted (read_fragment method): #{key}"
         nil
       else
         read_fragment_without_background_cache(key, options)
@@ -35,7 +35,11 @@ module BackgroundCache
         cache = BackgroundCache::Config.current_cache
         if cache
           if cache[:layout] == false
-            @background_cache_layout = controller.active_layout
+            if controller.respond_to?(:active_layout)
+              @background_cache_layout = controller.active_layout
+            else
+              @background_cache_layout = controller.send :_layout
+            end
             controller.class.layout(false)
           else
             @background_cache_layout = nil

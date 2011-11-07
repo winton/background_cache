@@ -37,6 +37,17 @@ module BackgroundCache
     BackgroundCache::Config.current_cache
   end
 
+  def self.attach!
+    ActionController::Base.send(:include, BackgroundCache::Controller)
+    ActionView::Helpers::CacheHelper.send(:include, BackgroundCache::Helper)
+
+    ::Dalli::Client.send(:include, BackgroundCache::Memcache)    if defined?(::Dalli::Client)
+    ::MemCache.send(:include, BackgroundCache::Memcache)         if defined?(::MemCache)
+    ::Memcached::Rails.send(:include, BackgroundCache::Memcache) if defined?(::Memcached::Rails)
+
+    puts "ATTACH!"
+  end
+
   def self.cache!(group=nil, instance=nil)
     unless instance
       instance = self.boot
