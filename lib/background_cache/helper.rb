@@ -9,7 +9,13 @@ module BackgroundCache
       # http://railsapi.com/doc/rails-v2.3.8/classes/ActionView/Helpers/CacheHelper.html
       # ActionController::Caching::Fragments#fragment_for (undocumented)
       #   actionpack/lib/action_controller/caching/fragments.rb
-      if @controller.perform_caching
+      perform_caching =
+        if @controller.respond_to?(:perform_caching)
+          @controller.perform_caching
+        else
+          ActionController::Base.perform_caching
+        end
+      if perform_caching
         cache = @controller.read_fragment(name, options)
         match = (
           BackgroundCache.active? &&
