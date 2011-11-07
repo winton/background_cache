@@ -10,13 +10,13 @@ module BackgroundCache
       # ActionController::Caching::Fragments#fragment_for (undocumented)
       #   actionpack/lib/action_controller/caching/fragments.rb
       perform_caching =
-        if @controller.respond_to?(:perform_caching)
-          @controller.perform_caching
+        if controller.respond_to?(:perform_caching)
+          controller.perform_caching
         else
           ActionController::Base.perform_caching
         end
       if perform_caching
-        cache = @controller.read_fragment(name, options)
+        cache = controller.read_fragment(name, options)
         match = (
           BackgroundCache.active? &&
           BackgroundCache.match?(name)
@@ -28,7 +28,7 @@ module BackgroundCache
             "<!-- #{name.inspect}#{' background' if match} cached #{Time.now.strftime("%m/%d/%Y at %I:%M %p")} -->",
             output_buffer[pos..-1]
           ].join("\n")
-          @controller.write_fragment(name, output, options)
+          controller.write_fragment(name, output, options)
         else
           output_buffer.concat(cache)
         end

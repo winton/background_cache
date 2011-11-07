@@ -44,8 +44,6 @@ module BackgroundCache
     ::Dalli::Client.send(:include, BackgroundCache::Memcache)    if defined?(::Dalli::Client)
     ::MemCache.send(:include, BackgroundCache::Memcache)         if defined?(::MemCache)
     ::Memcached::Rails.send(:include, BackgroundCache::Memcache) if defined?(::Memcached::Rails)
-
-    puts "ATTACH!"
   end
 
   def self.cache!(group=nil, instance=nil)
